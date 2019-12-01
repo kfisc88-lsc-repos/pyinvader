@@ -4,11 +4,13 @@ import math
 
 class Player(object):
 
-    def __init__(self, x, y, speed, screen):
-        self.shipImage = 'assets/player.png'
+    SHIPS = ["assets/player.png","assets/player2.png","assets/player3.png"]
+
+    def __init__(self, x, y, speed, screen, pnum):
+        self.shipImage = self.SHIPS[pnum-1]
         self.ship = pygame.image.load(self.shipImage)
-        self.w = 112
-        self.h = 75
+        self.w = self.ship.get_width()
+        self.h = self.ship.get_height()
         self.x = x
         self.y = y
 
@@ -33,14 +35,14 @@ class Player(object):
                 pygame.quit()
                 quit()
 
-            
+
             # check for left and right and spacebar
             if(event.type == pygame.KEYDOWN):
                 #print('a key has been pressed')
 
                 if(event.key == pygame.K_LEFT):
                     self.move = -self.speed
-                    
+
                 elif(event.key == pygame.K_RIGHT):
                     self.move = self.speed
 
@@ -71,7 +73,7 @@ class Player(object):
             self.fire(self.laser['x'], self.laser['y'])
             self.laser['y'] -= self.laser['chgY']
             s.scene.blit(self.laser['beam'], (self.laser['x'], self.laser['y']) )
-        
+
             #check for collision
             i = 0
             for ship in squad.ships:
@@ -102,7 +104,7 @@ class Player(object):
 
     def resetLaser(self):
         self.state = "ready"
-        self.laser['y'] = 520    
+        self.laser['y'] = 520
 
     def fire(self, x, y):
         if(self.state == "ready"):
@@ -110,11 +112,3 @@ class Player(object):
             pygame.mixer.Sound.play(self.sound)
         self.laser['y'] = y
         self.state = "fired"
-
-
-
-
-
-
-
-                

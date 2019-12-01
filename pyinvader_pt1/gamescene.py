@@ -15,6 +15,11 @@ class Gamescene(object):
         self.points = 0
         self.gameloop = True
 
+        self.font = 'assets/ARCADECLASSIC.TTF'
+        self.lives = 3
+        self.lifetext = 'assets/icon.png'
+        self.life = pygame.image.load(self.lifetext)
+
         self.highscores = self.getHighScores()
 
         pygame.display.set_icon(self.icon)
@@ -31,17 +36,21 @@ class Gamescene(object):
         if(self.bg != None):
             self.scene.blit(self.bg, (0,0) )
 
+    def displayLives(self):
+        for i in range(self.lives):
+            self.scene.blit(self.life, (self.width - (37 + 37*i), (10)))
+
     def update(self):
         self.setScoreBoard()
+        self.displayLives()
         pygame.display.update()
-
 
     def setScoreBoard(self):
         font = pygame.font.Font('freesansbold.ttf',32)
 
         text = font.render('[ '+str(self.points)+' ]', True, (255,255,255) )
         self.scene.blit(text, (10, 10) )
-   
+
     def setHighScores(self):
         hsFile = open("scores.txt","w")
         self.highscores.append(self.points)
@@ -52,20 +61,24 @@ class Gamescene(object):
 
     def getHighScores(self):
         hsFile = open("scores.txt","r")
-        scores = hsFile.readlines() 
+        scores = hsFile.readlines()
         hsFile.close()
         scores = [int(i) for i in scores]
         return scores
-    
+
     def setPoints(self, points):
         self.points += points
         self.setScoreBoard()
-    
+
+    def resetGame(self):
+        self.gameloop = False
+        self.points = 0
+        self.lives = 3
 
     def gameOver(self,result):
-        self.gameloop = False
-        font = pygame.font.Font('freesansbold.ttf', 32) 
-               
+        # self.gameloop = False
+        font = pygame.font.Font(self.font, 32)
+
         if(result == "win"):
              text = font.render('YOU WIN!!!  '+str(self.points)+' pts', True, (255,255,255) )
         if(result == "loss"):
@@ -74,3 +87,4 @@ class Gamescene(object):
         self.scene.blit(text, ( self.width // 2 - 160 , self.height //2 ) )
         self.update()
         self.setHighScores()
+        self.resetGame()
